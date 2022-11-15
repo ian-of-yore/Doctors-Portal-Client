@@ -32,8 +32,7 @@ const InfoCards = () => {
 
     return (
         <div>
-            <img src={clock} alt="" />
-            <div className='grid gap-6 mt-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+            <div className='grid gap-6 mt-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:mx-10'>
                 {
                     cardData.map(card => <InfoCard
                         key={card.id}
