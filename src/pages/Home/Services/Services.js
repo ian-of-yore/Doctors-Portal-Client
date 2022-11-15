@@ -29,7 +29,7 @@ const Services = () => {
     ]
 
     return (
-        <div className='mt-16'>
+        <div className='mt-16 mb-32'>
             <div className='text-center'>
                 <h3 className='text-xl font-bold uppercase text-secondary'>Our Services</h3>
                 <h2 className='text-4xl'>Services We Provide</h2>
@@ -43,11 +43,11 @@ const Services = () => {
                 }
             </div>
 
-            <div className="card w-9/12 mx-auto lg:card-side bg-base-100 shadow-xl mt-20">
-                <div className='w-2/5'>
-                    <figure><img src={treatment} className='md:h-[556px]' alt="Album" /></figure>
+            <div className="card w-full md:9/12 lg:w-9/12 mx-auto lg:card-side bg-base-100 shadow-xl mt-20">
+                <div className='lg:w-5/12'>
+                    <figure><img src={treatment} className='h-[300px] md:h-[350px] lg:h-[556px] w-3/5 md:w-3/5 lg:w-full' alt="Album" /></figure>
                 </div>
-                <div className="card-body w-3/5 h-3/5 pt-28 pl-20">
+                <div className="card-body lg:w-7/12 lg:h-3/5 lg:pt-28">
                     <h2 className="card-title text-5xl mb-6">Exceptional Dental Care, on Your Terms</h2>
                     <p className='mb-6'>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsumis that it has a more-or-less normal distribution of letters,as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page</p>
                     <div className="card-actions justify-start">
