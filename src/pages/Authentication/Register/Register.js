@@ -2,23 +2,25 @@ import React, { useContext, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
+import { toast } from 'react-hot-toast';
 
 const Register = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
-    const { createUser, socialLogInGoogle } = useContext(AuthContext);
-    const [successMessage, setSuccessMessage] = useState('');
+    const { createUser, socialLogInGoogle, updateUserProfile } = useContext(AuthContext);
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleRegister = (data) => {
-
-        setSuccessMessage('');
         setErrorMessage('');
-
 
         createUser(data.email, data.password)
             .then((result) => {
+                toast.success('Registration Successfull!');
                 console.log(result.user);
-                setSuccessMessage('Registration Successfull!')
+                updateUserProfile({
+                    displayName: data.name
+                })
+                    .then(() => { })
+                    .catch((err) => console.log(err))
             })
             .catch((err) => {
                 console.log(err);
@@ -67,9 +69,6 @@ const Register = () => {
                     </div>
                     {
                         errorMessage && <p className='text-red-600 text-sm'>{errorMessage}</p>
-                    }
-                    {
-                        successMessage && <p className='text-green-600 text-sm'>{successMessage}</p>
                     }
                     <input className='btn btn-accent w-full mt-6' value="Register" type="submit" />
                     <p className='text-center mt-2'>Already have an accout? <Link to='/login'><span className='text-secondary underline text-sm'>LogIn</span></Link></p>
