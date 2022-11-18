@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
@@ -6,14 +6,34 @@ import { AuthContext } from '../../../contexts/AuthProvider';
 const Register = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
     const { createUser, socialLogInGoogle } = useContext(AuthContext);
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleRegister = (data) => {
-        console.log(data);
+
+        setSuccessMessage('');
+        setErrorMessage('');
+
+
         createUser(data.email, data.password)
             .then((result) => {
                 console.log(result.user);
+                setSuccessMessage('Registration Successfull!')
             })
-            .catch((err) => console.log(err))
+            .catch((err) => {
+                console.log(err);
+                setErrorMessage(err.message);
+            })
+    }
+
+    const handleGoogleSignIn = () => {
+        socialLogInGoogle()
+            .then((result) => {
+                console.log(result.user)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 
     return (
@@ -45,11 +65,17 @@ const Register = () => {
                             type="password" className="input input-bordered w-80 h-11" />
                         {errors.password && <p className='text-red-600 text-center text-xs pt-2'>{errors.password?.message}</p>}
                     </div>
+                    {
+                        errorMessage && <p className='text-red-600 text-sm'>{errorMessage}</p>
+                    }
+                    {
+                        successMessage && <p className='text-green-600 text-sm'>{successMessage}</p>
+                    }
                     <input className='btn btn-accent w-full mt-6' value="Register" type="submit" />
                     <p className='text-center mt-2'>Already have an accout? <Link to='/login'><span className='text-secondary underline text-sm'>LogIn</span></Link></p>
                 </form>
                 <div className="divider">OR</div>
-                <button className='btn btn-outline w-full'>Continue With Google</button>
+                <button onClick={handleGoogleSignIn} className='btn btn-outline w-full'>Continue With Google</button>
             </div>
         </div>
     );

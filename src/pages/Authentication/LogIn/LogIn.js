@@ -1,19 +1,39 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
 
 const LogIn = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
-    const { emailPasswordLogIn } = useContext(AuthContext);
+    const { emailPasswordLogIn, socialLogInGoogle } = useContext(AuthContext);
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleLogin = (data) => {
         console.log(data);
+
+        setSuccessMessage('');
+        setErrorMessage('');
+
         emailPasswordLogIn(data.email, data.password)
+            .then((result) => {
+                console.log(result.user);
+                setSuccessMessage('Log In Successfull!')
+            })
+            .catch((err) => {
+                console.log(err);
+                setErrorMessage(err.message)
+            })
+    }
+
+    const handleGoogleSignIn = () => {
+        socialLogInGoogle()
             .then((result) => {
                 console.log(result.user)
             })
-            .catch((err) => console.log(err))
+            .catch((err) => {
+                console.log(err)
+            })
     }
 
     return (
@@ -31,16 +51,22 @@ const LogIn = () => {
                     <div className="form-control w-full">
                         <label className="label"> <span className="label-text text-base pl-1">Password</span> </label>
                         <input type="password"
-                            {...register("password", { required: "Password is required!"})}
+                            {...register("password", { required: "Password is required!" })}
                             className="input input-bordered w-80 h-11" />
                         {errors.password && <p className='text-red-600 text-sm font-semibold mt-1 text-center' role="alert">{errors.password?.message}</p>}
                         <label className="label"> <span className="text-xs underline">Forgot Password?</span> </label>
                     </div>
+                    {
+                        errorMessage && <p className='text-red-600 text-sm'>{errorMessage}</p>
+                    }
+                    {
+                        successMessage && <p className='text-green-600 text-sm'>{successMessage}</p>
+                    }
                     <input className='btn btn-accent w-full mt-3' value="Login" type="submit" />
                     <p className='text-center mt-2'>New Here? <Link to='/register'><span className='text-sm text-secondary underline'>Create an account!</span></Link></p>
                     <div className="divider">OR</div>
-                    <button className='btn btn-outline w-full'>Continue With Google</button>
                 </form>
+                <button onClick={handleGoogleSignIn} className='btn btn-outline w-full'>Continue With Google</button>
             </div>
         </div>
     );
