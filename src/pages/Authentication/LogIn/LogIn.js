@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../../contexts/AuthProvider';
 
 const LogIn = () => {
-
     const { register, formState: { errors }, handleSubmit } = useForm();
+    const { emailPasswordLogIn } = useContext(AuthContext);
+
     const handleLogin = (data) => {
         console.log(data);
+        emailPasswordLogIn(data.email, data.password)
+            .then((result) => {
+                console.log(result.user)
+            })
+            .catch((err) => console.log(err))
     }
 
     return (
@@ -24,7 +31,7 @@ const LogIn = () => {
                     <div className="form-control w-full">
                         <label className="label"> <span className="label-text text-base pl-1">Password</span> </label>
                         <input type="password"
-                            {...register("password", { required: "Password is required!", minLength: { value: 6, message: "Password must be atleast 6 characters or more" } })}
+                            {...register("password", { required: "Password is required!"})}
                             className="input input-bordered w-80 h-11" />
                         {errors.password && <p className='text-red-600 text-sm font-semibold mt-1 text-center' role="alert">{errors.password?.message}</p>}
                         <label className="label"> <span className="text-xs underline">Forgot Password?</span> </label>
