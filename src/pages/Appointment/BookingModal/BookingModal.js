@@ -40,6 +40,10 @@ const BookingModal = ({ treatment, setTreatment, selectedDate, refetch }) => {
                     toast.success('Appointment Booking Successfull!');
                     refetch();
                 }
+                else {
+                    toast.error(data.message);
+                    setTreatment(null);
+                }
             })
 
     }
