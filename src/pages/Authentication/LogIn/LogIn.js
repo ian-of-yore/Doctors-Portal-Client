@@ -18,7 +18,6 @@ const LogIn = () => {
 
         emailPasswordLogIn(data.email, data.password)
             .then((result) => {
-                console.log(result.user);
                 toast.success('Login Successfull!');
                 navigate(from, { replace: true });
             })
@@ -31,7 +30,6 @@ const LogIn = () => {
     const handleGoogleSignIn = () => {
         socialLogInGoogle()
             .then((result) => {
-                console.log(result.user)
             })
             .catch((err) => {
                 console.log(err)
