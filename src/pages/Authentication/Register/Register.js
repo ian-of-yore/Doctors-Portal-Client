@@ -22,6 +22,8 @@ const Register = () => {
                     displayName: data.name
                 })
                     .then(() => {
+                        // sending user data to the backend to save to the database
+                        saveUserToDB(data.name, data.email)
                         navigate('/');
                     })
                     .catch((err) => console.log(err))
@@ -39,6 +41,21 @@ const Register = () => {
             })
             .catch((err) => {
                 console.log(err)
+            })
+    }
+
+    const saveUserToDB = (name, email) => {
+        const user = { name, email };
+        fetch('http://localhost:5000/users', {
+            method: "POST",
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
             })
     }
 
