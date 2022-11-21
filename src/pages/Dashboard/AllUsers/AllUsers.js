@@ -1,10 +1,9 @@
-import { async } from '@firebase/util';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import toast from 'react-hot-toast';
 
 const AllUsers = () => {
 
-    const { data: allUsers = [] } = useQuery({
+    const { data: allUsers = [], refetch } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             const res = await fetch('http://localhost:5000/users');
@@ -12,6 +11,23 @@ const AllUsers = () => {
             return data;
         }
     })
+
+    const handleMakeAdmin = (userId) => {
+        fetch(`http://localhost:5000/users/admin/${userId}`, {
+            method: "PUT",
+            headers: {
+                authorization: `bearer ${localStorage.getItem('doctors-token')}`
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data);
+                if (data.modifiedCount > 0) {
+                    toast.success('The user role has been updated to Admin!')
+                    refetch();
+                }
+            })
+    }
 
     return (
         <div>
@@ -23,8 +39,8 @@ const AllUsers = () => {
                             <th></th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Favorite Color</th>
-                            <th>Favorite Color</th>
+                            <th>Role</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,7 +49,11 @@ const AllUsers = () => {
                                 <th>{index + 1}</th>
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
-                                <td>Blue</td>
+                                <td>{
+                                    user?.role !== 'Admin' && <button onClick={() => handleMakeAdmin(user._id)} className='btn btn-sm btn-success'>Make Admin</button>
+                                }
+                                </td>
+                                <td><button className='btn btn-sm btn-warning text-gray-800'>Delete User</button></td>
                             </tr>)
                         }
                     </tbody>
