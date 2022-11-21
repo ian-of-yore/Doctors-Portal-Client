@@ -1,4 +1,4 @@
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import React, { useContext } from 'react';
 import { AuthContext } from '../../../contexts/AuthProvider';
 
@@ -7,10 +7,14 @@ const MyAppointments = () => {
     const { user } = useContext(AuthContext);
     const url = `http://localhost:5000/bookings?email=${user?.email}`;
 
-    const { data = [], isLoading } = useQuery({
+    const { data: myAppointments = [] } = useQuery({
         queryKey: ['bookings', user?.email],
         queryFn: async () => {
-            const res = await fetch(url);
+            const res = await fetch(url, {
+                headers: {
+                    authorization: `bearer ${localStorage.getItem('doctors-token')}`
+                }
+            });
             const data = await res.json();
             return data;
         }
@@ -36,7 +40,7 @@ const MyAppointments = () => {
                     </thead>
                     <tbody>
                         {
-                            data.map((singleData, index) => <tr
+                            myAppointments.map((singleData, index) => <tr
                                 key={singleData._id}
                             >
                                 <th>{index + 1}</th>

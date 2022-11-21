@@ -3,13 +3,19 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider';
 import { toast } from 'react-hot-toast';
+import useToken from '../../../hooks/useToken';
 
 const Register = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
     const { createUser, socialLogInGoogle, updateUserProfile } = useContext(AuthContext);
     const [errorMessage, setErrorMessage] = useState('');
-
+    const [createdUserEmail, setCreatedUserEmail] = useState('');
+    const [token] = useToken(createdUserEmail);
     const navigate = useNavigate();
+
+    if (token) {
+        navigate('/');
+    }
 
     const handleRegister = (data) => {
         setErrorMessage('');
@@ -17,14 +23,13 @@ const Register = () => {
         createUser(data.email, data.password)
             .then((result) => {
                 toast.success('Registration Successfull!');
-                console.log(result.user);
+                // console.log(result.user);
                 updateUserProfile({
                     displayName: data.name
                 })
                     .then(() => {
                         // sending user data to the backend to save to the database
-                        saveUserToDB(data.name, data.email)
-                        navigate('/');
+                        saveUserToDB(data.name, data.email);
                     })
                     .catch((err) => console.log(err))
             })
@@ -55,9 +60,11 @@ const Register = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
+                // console.log(data)
+                setCreatedUserEmail(email);
             })
     }
+
 
     return (
         <div className='h-[480px] flex justify-center items-center mt-10'>

@@ -3,15 +3,22 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { AuthContext } from '../../../contexts/AuthProvider';
+import useToken from '../../../hooks/useToken';
 
 const LogIn = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
     const { emailPasswordLogIn, socialLogInGoogle } = useContext(AuthContext);
     const [errorMessage, setErrorMessage] = useState('');
+    const [loginUserEmail, setLoginUserEmail] = useState('');
+    const [token] = useToken(loginUserEmail);
 
     let location = useLocation();
     let navigate = useNavigate();
     let from = location.state?.from?.pathname || '/';
+
+    if(token){
+        navigate(from, { replace: true });
+    }
 
     const handleLogin = (data) => {
         setErrorMessage('');
@@ -19,7 +26,7 @@ const LogIn = () => {
         emailPasswordLogIn(data.email, data.password)
             .then((result) => {
                 toast.success('Login Successfull!');
-                navigate(from, { replace: true });
+                setLoginUserEmail(data.email);
             })
             .catch((err) => {
                 console.log(err);
